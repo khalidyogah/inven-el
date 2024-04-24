@@ -4,11 +4,12 @@ type ItemCondition struct {
 	Id              int64  `json:"id"`
 	ItemId          int64  `json:"item_id"`
 	ImageUrl        string `json:"image_url"`
-	OverallConditon string `json:"overall_conditon"`
+	LastcheckDate   *string
+	OverallConditon int    `json:"overall_conditon"`
 	Status          string `json:"status"`
 	Note            string `json:"note"`
 	CreatedAt       string
-	UpdatedAt       string
+	UpdatedAt       *string
 }
 
 type ItemList struct {
@@ -19,5 +20,12 @@ type ItemList struct {
 	DepartmentId int64  `json:"department_id"`
 	TypeId       int64  `json:"type_id"`
 	CreatedAt    string
-	UpdatedAt    string
+	UpdatedAt    *string
+}
+
+type ItemType struct {
+	Id        int64  `json:"id"`
+	Type      string `json:"type"`
+	CreatedAt string
+	UpdatedAt *string
 }

@@ -19,12 +19,19 @@ func StartServer() *gin.Engine {
 	router.POST("/item-con", controllers.InsertItemCondition)
 	router.PUT("/item-con/:id", controllers.UpdateItemCondition)
 	router.DELETE("/item-con/:id", controllers.DeleteItemCondition)
-	router.GET("/item-con/:id/book", controllers.GetItemCondition)
+	router.GET("/item-con/:id", controllers.GetItemCondition)
 
-	// router.GET("/books", controllers.GetAllBooks)
-	// router.POST("/books", controllers.InsertBook)
-	// router.PUT("/books/:id", controllers.UpdateBook)
-	// router.DELETE("/books/:id", controllers.DeleteBook)
+	router.GET("/item-type", controllers.GetAllTypes)
+	router.POST("/item-type", controllers.InsertItemType)
+	router.PUT("/item-type/:id", controllers.UpdateItemType)
+	router.DELETE("/item-type/:id", controllers.DeleteItemType)
+	router.GET("/item-type/:id", controllers.GetItemType)
+
+	router.GET("/department", controllers.GetAllDepartment)
+	router.POST("/department", controllers.InsertDepartment)
+	router.PUT("/department/:id", controllers.UpdateDepartment)
+	router.DELETE("/department/:id", controllers.DeleteDepartment)
+	router.GET("/department/:id", controllers.GetDepartment)
 
 	return router
 }
