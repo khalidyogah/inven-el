@@ -3,9 +3,9 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"inven-el/database"
+	"inven-el/routers"
 	"os"
-	"q3/database"
-	"q3/routers"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -41,5 +41,5 @@ func main() {
 
 	defer DB.Close()
 
-	routers.StartServer().Run(":" + os.Getenv("PORT"))
+	routers.StartServer().Run("localhost:8080")
 }
