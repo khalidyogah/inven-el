@@ -1,5 +1,9 @@
 -- +migrate Up
 -- +migrate StatementBegin
+CREATE TABLE user(
+    username PRIMARY KEY,
+    password VARCHAR(256)
+);
 
 CREATE TABLE department(
     id SERIAL PRIMARY KEY,

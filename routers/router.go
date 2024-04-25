@@ -9,6 +9,8 @@ import (
 func StartServer() *gin.Engine {
 	router := gin.Default()
 
+	router.POST("/login/", controller.Login)
+
 	router.GET("/item-list/", controllers.GetAllItems)
 	router.POST("/item-list", controllers.InsertItemList)
 	router.PUT("/item-list/:id", controllers.UpdateItemList)
