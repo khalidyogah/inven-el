@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func InsertDepartment(c *gin.Context) {
+func CreateAccount(c *gin.Context) {
 	var department structs.Department
 
 	err := c.ShouldBindJSON(&department)
