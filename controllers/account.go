@@ -5,44 +5,91 @@ import (
 	"inven-el/repository"
 	"inven-el/structs"
 	"net/http"
+	"os"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func CreateAccount(c *gin.Context) {
-	var department structs.Department
-
-	err := c.ShouldBindJSON(&department)
-	if err != nil {
-		panic(err)
-	}
-
-	err = repository.InsertDepartment(database.DbConnection, department)
-	if err != nil {
-		panic(err)
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"result": "Success Insert Item",
-	})
-}
-
-func Login(c *gin.Context) {
+	//get the email pass req body
 	var user structs.User
 
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
-		panic(err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to read body",
+		})
+		return
 	}
 
-	err = repository.Login(database.DbConnection, department)
+	//hash password
+	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
+	user.Password = string(hash)
 
 	if err != nil {
-		panic(err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to hash password",
+		})
+		return
 	}
 
+	//create user
+	err = repository.CreateAccount(database.DbConnection, user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed create account",
+		})
+		return
+	}
+
+	//respond
 	c.JSON(http.StatusOK, gin.H{
-		"result": "Success Update Item",
+		"result": "Success create account",
 	})
+}
+
+func Login(c *gin.Context) {
+	//get email pass from body
+	var user structs.User
+
+	err := c.ShouldBindJSON(&user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to read body",
+		})
+		return
+	}
+
+	//look up requested user
+	//compare sent in pass with saved user pass hash
+	err = repository.Login(database.DbConnection, user)
+
+	//generate jwt token (subject, expiration)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"sub": user.Username,
+		"exp": time.Now().Add(time.Hour * 24).Unix(),
+	})
+
+	// Sign and get the complete encoded token as a string using the secret
+	tokenString, err := token.SignedString([]byte(os.Getenv("JWT")))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to create jwt token",
+		})
+		panic(err)
+		return
+	}
+
+	//send it back
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("Authorization", tokenString, 3600*24, "", "", false, true)
+	c.JSON(http.StatusOK, gin.H{})
+
+	// c.JSON(http.StatusOK, gin.H{
+	// 	"token": tokenString,
+	// })
 
 }

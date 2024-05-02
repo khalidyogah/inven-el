@@ -3,20 +3,37 @@ package repository
 import (
 	"database/sql"
 	"inven-el/structs"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 func CreateAccount(db *sql.DB, user structs.User) (err error) {
-	sql := "INSERT INTO department (username, password) VALUES ($1,$2)"
+	sql := "INSERT INTO users (username, password) VALUES ($1,$2)"
 
-	errs := db.QueryRow(sql, user.Username)
+	errs := db.QueryRow(sql, user.Username, user.Password)
 
 	return errs.Err()
 }
 
 func Login(db *sql.DB, user structs.User) (err error) {
-	sql := "SELECT * FROM user WHERE username = $1 and password = $2"
+	var res structs.User
+	sql := "SELECT * FROM users WHERE username = $1"
 
-	errs := db.QueryRow(sql, user.Username, user.Password)
+	row := db.QueryRow(sql, user.Username, user.Password)
 
-	return errs.Err()
+	err = row.Scan(
+		&res.Username,
+		&res.Password,
+	)
+	if err != nil {
+		return err
+	}
+
+	//decrypt + compare pass found
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(res.Password))
+	if err != nil {
+		return err
+	}
+
+	return row.Err()
 }

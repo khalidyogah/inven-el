@@ -1,7 +1,7 @@
 -- +migrate Up
 -- +migrate StatementBegin
-CREATE TABLE user(
-    username PRIMARY KEY,
+CREATE TABLE users (
+    username VARCHAR(256) PRIMARY KEY,
     password VARCHAR(256)
 );
 

@@ -9,7 +9,8 @@ import (
 func StartServer() *gin.Engine {
 	router := gin.Default()
 
-	router.POST("/login/", controller.Login)
+	router.POST("/signup/", controllers.CreateAccount)
+	router.POST("/login/", controllers.Login)
 
 	router.GET("/item-list/", controllers.GetAllItems)
 	router.POST("/item-list", controllers.InsertItemList)
