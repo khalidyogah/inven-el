@@ -2,6 +2,7 @@ package routers
 
 import (
 	"inven-el/controllers"
+	"inven-el/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,6 +12,7 @@ func StartServer() *gin.Engine {
 
 	router.POST("/signup/", controllers.CreateAccount)
 	router.POST("/login/", controllers.Login)
+	router.GET("/validate/", middleware.RequiredAuth, controllers.Validate)
 
 	router.GET("/item-list/", controllers.GetAllItems)
 	router.POST("/item-list", controllers.InsertItemList)
