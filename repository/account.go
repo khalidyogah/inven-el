@@ -37,3 +37,18 @@ func Login(db *sql.DB, user structs.User) (err error) {
 
 	return row.Err()
 }
+
+func FindUser(db *sql.DB, username interface{}, user *structs.User) (err error) {
+	sql := "SELECT * FROM users WHERE username = $1"
+
+	row := db.QueryRow(sql, username)
+	err = row.Scan(
+		&user.Username,
+		&user.Password,
+	)
+	if err != nil {
+		return err
+	}
+
+	return row.Err()
+}
