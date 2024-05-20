@@ -13,16 +13,22 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+func PanicHandler(c *gin.Context, message string) {
+	if message := recover(); message != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"result": message,
+		})
+	}
+}
+
 func CreateAccount(c *gin.Context) {
 	//get the email pass req body
 	var user structs.User
 
+	defer PanicHandler(c, "Failed create account")
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Failed to read body",
-		})
-		return
+		panic(err)
 	}
 
 	//hash password
@@ -79,7 +85,6 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Failed to create jwt token",
 		})
-		panic(err)
 		return
 	}
 

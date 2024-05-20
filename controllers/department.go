@@ -54,6 +54,8 @@ func GetDepartment(c *gin.Context) {
 func InsertDepartment(c *gin.Context) {
 	var department structs.Department
 
+	defer PanicHandler(c, "Failed insert item")
+
 	err := c.ShouldBindJSON(&department)
 	if err != nil {
 		panic(err)
@@ -72,6 +74,8 @@ func InsertDepartment(c *gin.Context) {
 func UpdateDepartment(c *gin.Context) {
 	var department structs.Department
 	id, _ := strconv.Atoi(c.Param("id"))
+
+	defer PanicHandler(c, "Failed update item")
 
 	err := c.ShouldBindJSON(&department)
 	if err != nil {
@@ -96,6 +100,7 @@ func DeleteDepartment(c *gin.Context) {
 	var department structs.Department
 	id, err := strconv.Atoi(c.Param("id"))
 
+	defer PanicHandler(c, "Failed delete item")
 	department.Id = int64(id)
 
 	err = repository.DeleteDepartment(database.DbConnection, department)

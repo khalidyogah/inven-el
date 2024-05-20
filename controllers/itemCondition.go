@@ -54,6 +54,7 @@ func GetItemCondition(c *gin.Context) {
 func InsertItemCondition(c *gin.Context) {
 	var item structs.ItemCondition
 
+	defer PanicHandler(c, "Failed insert item")
 	err := c.ShouldBindJSON(&item)
 	if err != nil {
 		panic(err)
@@ -73,6 +74,7 @@ func UpdateItemCondition(c *gin.Context) {
 	var item structs.ItemCondition
 	id, _ := strconv.Atoi(c.Param("id"))
 
+	defer PanicHandler(c, "Failed update item")
 	err := c.ShouldBindJSON(&item)
 	if err != nil {
 		panic(err)
@@ -100,6 +102,7 @@ func DeleteItemCondition(c *gin.Context) {
 
 	err = repository.DeleteItemCondition(database.DbConnection, item)
 
+	defer PanicHandler(c, "Failed delete item")
 	if err != nil {
 		panic(err)
 	}
