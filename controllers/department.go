@@ -54,13 +54,15 @@ func GetDepartment(c *gin.Context) {
 func InsertDepartment(c *gin.Context) {
 	var department structs.Department
 
-	defer PanicHandler(c, "Failed insert item")
-
 	err := c.ShouldBindJSON(&department)
 	if err != nil {
-		panic(err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to create jwt token",
+		})
+		return
 	}
 
+	defer PanicHandler(c, "Failed insert item")
 	err = repository.InsertDepartment(database.DbConnection, department)
 	if err != nil {
 		panic(err)
@@ -75,17 +77,19 @@ func UpdateDepartment(c *gin.Context) {
 	var department structs.Department
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	defer PanicHandler(c, "Failed update item")
-
 	err := c.ShouldBindJSON(&department)
 	if err != nil {
-		panic(err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to create jwt token",
+		})
+		return
 	}
 
 	department.Id = int64(id)
 
 	err = repository.UpdateDepartment(database.DbConnection, department)
 
+	defer PanicHandler(c, "Failed update item")
 	if err != nil {
 		panic(err)
 	}

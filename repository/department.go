@@ -32,8 +32,6 @@ func GetAllDepartment(db *sql.DB) (err error, results []structs.Department) {
 func GetDepartment(db *sql.DB, id string) (err error, results []structs.Department) {
 	sql := "SELECT * FROM department WHERE id = $1"
 
-	defer errMsg()
-
 	rows, err := db.Query(sql, id)
 	if err != nil {
 		panic(err)

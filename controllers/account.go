@@ -25,10 +25,12 @@ func CreateAccount(c *gin.Context) {
 	//get the email pass req body
 	var user structs.User
 
-	defer PanicHandler(c, "Failed create account")
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
-		panic(err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to read body",
+		})
+		return
 	}
 
 	//hash password
@@ -43,12 +45,10 @@ func CreateAccount(c *gin.Context) {
 	}
 
 	//create user
+	defer PanicHandler(c, "Failed create account")
 	err = repository.CreateAccount(database.DbConnection, user)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Failed create account",
-		})
-		return
+		panic(err)
 	}
 
 	//respond
