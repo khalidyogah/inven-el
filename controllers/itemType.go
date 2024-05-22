@@ -54,6 +54,7 @@ func GetItemType(c *gin.Context) {
 func InsertItemType(c *gin.Context) {
 	var item structs.ItemType
 
+	defer PanicHandler(c, "Failed insert item")
 	err := c.ShouldBindJSON(&item)
 	if err != nil {
 		panic(err)
@@ -73,6 +74,7 @@ func UpdateItemType(c *gin.Context) {
 	var item structs.ItemType
 	id, _ := strconv.Atoi(c.Param("id"))
 
+	defer PanicHandler(c, "Failed update item")
 	err := c.ShouldBindJSON(&item)
 	if err != nil {
 		panic(err)
@@ -98,6 +100,7 @@ func DeleteItemType(c *gin.Context) {
 
 	item.Id = int64(id)
 
+	defer PanicHandler(c, "Failed delete item")
 	err = repository.DeleteItemType(database.DbConnection, item)
 
 	if err != nil {
